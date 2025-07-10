@@ -57,12 +57,33 @@ class NPC:
     def update_relationship(self, other_id, change):
         """Update relationship with another NPC"""
         current = self.relationships.get(other_id, 0)
-        self.relationships[other_id] = max(-100, min(100, current + change))
+        new_value = max(-100, min(100, current + change))
+        
+        # Log significant relationship changes
+        if abs(change) >= 5:
+            direction = "+" if change > 0 else ""
+            print(f"  💕 {self.name} → relationship {direction}{change}: {current} → {new_value}")
+        
+        self.relationships[other_id] = new_value
         
     def update_stat(self, stat_name, change):
         """Update stat with limits"""
         if stat_name in self.stats:
-            self.stats[stat_name] = max(0, min(100, self.stats[stat_name] + change))
+            old_value = self.stats[stat_name]
+            new_value = max(0, min(100, old_value + change))
+            
+            # Log significant stat changes
+            if abs(change) >= 10:
+                direction = "+" if change > 0 else ""
+                stat_icon = {
+                    "health": "❤️",
+                    "energy": "⚡",
+                    "hunger": "🍽️",
+                    "mood": "😊"
+                }.get(stat_name, "📊")
+                print(f"  {stat_icon} {self.name} → {stat_name} {direction}{change}: {old_value} → {new_value}")
+            
+            self.stats[stat_name] = new_value
 
 
 class Location:

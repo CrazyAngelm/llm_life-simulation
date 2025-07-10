@@ -20,6 +20,8 @@ life_simulator_mvp/
 
 ### 1. Install dependencies
 ```bash
+python -m venv venv
+.\venv\scripts\activate
 pip install -r requirements.txt
 ```
 
@@ -27,7 +29,7 @@ pip install -r requirements.txt
 ```bash
 # In a separate terminal:
 ollama serve
-ollama pull llama3.2
+ollama pull qwen2.5:3b
 ```
 
 ### 3. Configure DeepSeek API (optional)
@@ -79,7 +81,7 @@ In `config.py` you can tweak:
 ```bash
 ollama serve
 ollama list          # check models
-ollama pull llama3.2 # if model is missing
+ollama pull qwen2.5:3b # if model is missing
 ```
 
 **DeepSeek error:**
@@ -105,6 +107,3 @@ ollama pull llama3.2 # if model is missing
 - **DeepSeek API** – powerful LLM for chronicles
 - **JSON** – state persistence
 - **Async/Await** – efficient LLM interaction
-
-**Development time**: ~6-8 hours of active coding
-**MVP ready**: ✅ Demonstrates all project requirements! 

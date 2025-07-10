@@ -1,0 +1,653 @@
+{
+  "current_day": 10,
+  "npcs": {
+    "king_1": {
+      "id": "king_1",
+      "name": "King Aldwin",
+      "role": "king",
+      "location": "Castle Ravencrest",
+      "age": 31.000000000000014,
+      "stats": {
+        "health": 74,
+        "energy": 72,
+        "hunger": 49,
+        "mood": 100
+      },
+      "relationships": {
+        "guard_1": -14,
+        "peasant_1": 4,
+        "merchant_1": 18,
+        "hunter_1": 6,
+        "blacksmith_2": 13,
+        "cleric_1": -31,
+        "thief_2": -23,
+        "sorcerer_1": -3,
+        "tavernkeeper_3": -24
+      },
+      "alive": true,
+      "actions_today": [
+        "🍞 King Aldwin ate",
+        "💬 King Aldwin talked to Sir Garrett (check on guard's mood and energy levels)"
+      ]
+    },
+    "guard_1": {
+      "id": "guard_1",
+      "name": "Sir Garrett",
+      "role": "guard",
+      "location": "Castle Ravencrest",
+      "age": 32.000000000000014,
+      "stats": {
+        "health": 89,
+        "energy": 69,
+        "hunger": 32,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 13,
+        "peasant_1": 41,
+        "merchant_1": 56,
+        "hunter_1": -21,
+        "blacksmith_2": -15,
+        "cleric_1": 17,
+        "thief_2": 1,
+        "sorcerer_1": 30,
+        "tavernkeeper_3": 1
+      },
+      "alive": true,
+      "actions_today": [
+        "🍞 Sir Garrett ate"
+      ]
+    },
+    "peasant_1": {
+      "id": "peasant_1",
+      "name": "Farmer Beck",
+      "role": "peasant",
+      "location": "Castle Ravencrest",
+      "age": 38.000000000000014,
+      "stats": {
+        "health": 79,
+        "energy": 45,
+        "hunger": 47,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 57,
+        "guard_1": 21,
+        "merchant_1": -19,
+        "hunter_1": 26,
+        "blacksmith_2": -22,
+        "cleric_1": 26,
+        "thief_2": 30,
+        "sorcerer_1": -11,
+        "tavernkeeper_3": 24
+      },
+      "alive": true,
+      "actions_today": []
+    },
+    "merchant_1": {
+      "id": "merchant_1",
+      "name": "Trader Magnus",
+      "role": "merchant",
+      "location": "Castle Ravencrest",
+      "age": 45.000000000000014,
+      "stats": {
+        "health": 92,
+        "energy": 70,
+        "hunger": 45,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 8,
+        "guard_1": 28,
+        "peasant_1": 10,
+        "hunter_1": 26,
+        "blacksmith_2": 47,
+        "cleric_1": -8,
+        "thief_2": -20,
+        "sorcerer_1": -9,
+        "tavernkeeper_3": 37
+      },
+      "alive": true,
+      "actions_today": [
+        "🍞 Trader Magnus ate"
+      ]
+    },
+    "hunter_1": {
+      "id": "hunter_1",
+      "name": "Hunter Lysa",
+      "role": "hunter",
+      "location": "Castle Ravencrest",
+      "age": 54.000000000000014,
+      "stats": {
+        "health": 73,
+        "energy": 65,
+        "hunger": 58,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 71,
+        "guard_1": -26,
+        "peasant_1": 37,
+        "merchant_1": -24,
+        "blacksmith_2": -13,
+        "cleric_1": 16,
+        "thief_2": 19,
+        "sorcerer_1": -30,
+        "tavernkeeper_3": -29
+      },
+      "alive": true,
+      "actions_today": [
+        "😴 Hunter Lysa rested"
+      ]
+    },
+    "blacksmith_2": {
+      "id": "blacksmith_2",
+      "name": "Forge Thane",
+      "role": "blacksmith",
+      "location": "Castle Ravencrest",
+      "age": 40.000000000000014,
+      "stats": {
+        "health": 72,
+        "energy": 73,
+        "hunger": 53,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 5,
+        "guard_1": 36,
+        "peasant_1": 30,
+        "merchant_1": 31,
+        "hunter_1": -10,
+        "cleric_1": 16,
+        "thief_2": -29,
+        "sorcerer_1": 46,
+        "tavernkeeper_3": -13
+      },
+      "alive": true,
+      "actions_today": [
+        "😴 Forge Thane rested",
+        "💬 Forge Thane talked to King Aldwin (try to maintain a good relationship despite current tension)"
+      ]
+    },
+    "cleric_1": {
+      "id": "cleric_1",
+      "name": "Healer Mira",
+      "role": "cleric",
+      "location": "Castle Ravencrest",
+      "age": 22.000000000000014,
+      "stats": {
+        "health": 75,
+        "energy": 40,
+        "hunger": 51,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 30,
+        "guard_1": 40,
+        "peasant_1": -16,
+        "merchant_1": 10,
+        "hunter_1": 6,
+        "blacksmith_2": 45,
+        "thief_2": 10,
+        "sorcerer_1": 26,
+        "tavernkeeper_3": -9
+      },
+      "alive": true,
+      "actions_today": [
+        "🍞 Healer Mira ate"
+      ]
+    },
+    "thief_2": {
+      "id": "thief_2",
+      "name": "Thief Renal",
+      "role": "thief",
+      "location": "Castle Ravencrest",
+      "age": 20.000000000000014,
+      "stats": {
+        "health": 100,
+        "energy": 42,
+        "hunger": 43,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 10,
+        "guard_1": -25,
+        "peasant_1": 24,
+        "merchant_1": -12,
+        "hunter_1": -15,
+        "blacksmith_2": 37,
+        "cleric_1": 41,
+        "sorcerer_1": 45,
+        "tavernkeeper_3": 41
+      },
+      "alive": true,
+      "actions_today": [
+        "🍞 Thief Renal ate"
+      ]
+    },
+    "sorcerer_1": {
+      "id": "sorcerer_1",
+      "name": "Wizard Garen",
+      "role": "sorcerer",
+      "location": "Castle Ravencrest",
+      "age": 55.000000000000014,
+      "stats": {
+        "health": 74,
+        "energy": 73,
+        "hunger": 60,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": 42,
+        "guard_1": -17,
+        "peasant_1": 8,
+        "merchant_1": -24,
+        "hunter_1": -26,
+        "blacksmith_2": -20,
+        "cleric_1": 46,
+        "thief_2": 12,
+        "tavernkeeper_3": 23
+      },
+      "alive": true,
+      "actions_today": [
+        "😴 Wizard Garen rested"
+      ]
+    },
+    "tavernkeeper_3": {
+      "id": "tavernkeeper_3",
+      "name": "Baron Eliot",
+      "role": "tavernkeeper",
+      "location": "Castle Ravencrest",
+      "age": 19.000000000000014,
+      "stats": {
+        "health": 82,
+        "energy": 39,
+        "hunger": 60,
+        "mood": 100
+      },
+      "relationships": {
+        "king_1": -19,
+        "guard_1": -8,
+        "peasant_1": -2,
+        "merchant_1": -5,
+        "hunter_1": 6,
+        "blacksmith_2": 16,
+        "cleric_1": -8,
+        "thief_2": 10,
+        "sorcerer_1": 3
+      },
+      "alive": true,
+      "actions_today": []
+    }
+  },
+  "locations": {
+    "Castle Ravencrest": {
+      "name": "Castle Ravencrest",
+      "type": "royal",
+      "description": "Dark fortress on a cliff",
+      "npc_ids": [
+        "king_1",
+        "guard_1",
+        "peasant_1",
+        "merchant_1",
+        "hunter_1",
+        "blacksmith_2",
+        "cleric_1",
+        "thief_2",
+        "sorcerer_1",
+        "tavernkeeper_3"
+      ],
+      "events_today": [
+        "🎲 strange event"
+      ]
+    },
+    "Willowbrook": {
+      "name": "Willowbrook",
+      "type": "settlement",
+      "description": "Peaceful village by a stream",
+      "npc_ids": [],
+      "events_today": []
+    },
+    "Shadowwood": {
+      "name": "Shadowwood",
+      "type": "wilderness",
+      "description": "Mysterious forest full of ancient secrets",
+      "npc_ids": [],
+      "events_today": []
+    }
+  },
+  "daily_logs": [
+    {
+      "day": 1,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "🍞 Sir Garrett ate",
+            "😴 Farmer Beck rested",
+            "💬 Farmer Beck talked to King Aldwin (seek advice on farm management)",
+            "💬 Trader Magnus talked to Sir Garrett (check guard's mood and energy level for potential support during a possible conflict)",
+            "🍞 Hunter Lysa ate",
+            "😠 Wizard Garen argued with King Aldwin (to discuss strategies to improve mood and energy levels)"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 2,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": [
+            "🍞 King Aldwin ate",
+            "🍞 Sir Garrett ate",
+            "🍞 Farmer Beck ate",
+            "💬 Farmer Beck talked to King Aldwin (to discuss the current mood and improve my relationship)",
+            "😴 Trader Magnus rested",
+            "Hunter Lysa 🏹 hunted",
+            "💬 Hunter Lysa talked to King Aldwin (maintain positive relationship with king)",
+            "🍞 Forge Thane ate",
+            "🍞 Healer Mira ate",
+            "🍞 Wizard Garen ate",
+            "🍞 Baron Eliot ate"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 3,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "😴 Sir Garrett rested",
+            "🍞 Trader Magnus ate",
+            "🍞 Hunter Lysa ate",
+            "😴 Forge Thane rested",
+            "🍞 Thief Renal ate",
+            "🤝 Wizard Garen helped King Aldwin (to discuss the wellbeing of the castle and gather support for upcoming tasks)",
+            "😴 Baron Eliot rested"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 4,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": [
+            "😴 King Aldwin rested",
+            "🍞 Sir Garrett ate",
+            "🍞 Farmer Beck ate",
+            "💬 Trader Magnus talked to Sir Garrett (check the guard's mood to ensure cooperation)",
+            "🍞 Forge Thane ate",
+            "🍞 Healer Mira ate",
+            "😴 Thief Renal rested",
+            "😠 Thief Renal argued with King Aldwin (to convince the king to increase my energy)",
+            "🍞 Wizard Garen ate",
+            "🍞 Baron Eliot ate"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 5,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "🍞 King Aldwin ate",
+            "🍞 Sir Garrett ate",
+            "🍞 Trader Magnus ate",
+            "🍞 Hunter Lysa ate",
+            "🍞 Thief Renal ate",
+            "🍞 Wizard Garen ate",
+            "🍞 Baron Eliot ate"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 6,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "🍞 King Aldwin ate",
+            "🤝 Sir Garrett helped Farmer Beck (peasant seems distressed and may need assistance with a simple task)",
+            "🍞 Farmer Beck ate",
+            "😠 Farmer Beck argued with King Aldwin (to improve relationship for potential assistance in farming tasks)",
+            "🤝 Trader Magnus helped King Aldwin (to improve my relationship and potentially get support in case of an emergency)",
+            "😴 Hunter Lysa rested",
+            "💬 Hunter Lysa talked to King Aldwin (check on relationship status and seek support)",
+            "🍞 Forge Thane ate",
+            "🍞 Healer Mira ate",
+            "🍞 Thief Renal ate",
+            "😴 Wizard Garen rested"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 7,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "🍞 Sir Garrett ate",
+            "😴 Farmer Beck rested",
+            "💬 Farmer Beck talked to King Aldwin (seek advice on relationship improvement)",
+            "🍞 Trader Magnus ate",
+            "💬 Trader Magnus talked to King Aldwin (try to improve relationship and seek advice on managing the castle)",
+            "🍞 Hunter Lysa ate",
+            "🍞 Forge Thane ate",
+            "😴 Healer Mira rested",
+            "😠 Healer Mira argued with King Aldwin (to convince king to prioritize the well-being of my staff)",
+            "🤝 Wizard Garen helped King Aldwin (to discuss strategies for improving the castle's defenses)",
+            "🍞 Baron Eliot ate",
+            "💬 Baron Eliot talked to Sir Garrett (check on the guard's mood and health status)"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 8,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": [
+            "🍞 King Aldwin ate",
+            "💬 King Aldwin talked to Farmer Beck (check on peasant's mood and offer help)",
+            "😴 Sir Garrett rested",
+            "🍞 Farmer Beck ate",
+            "🍞 Trader Magnus ate",
+            "🍞 Healer Mira ate",
+            "🍞 Thief Renal ate",
+            "🍞 Wizard Garen ate",
+            "😴 Baron Eliot rested"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 9,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [],
+          "actions": [
+            "😴 King Aldwin rested",
+            "💬 King Aldwin talked to Farmer Beck (check on the mood of the peasant)",
+            "🍞 Sir Garrett ate",
+            "🍞 Farmer Beck ate",
+            "😴 Trader Magnus rested",
+            "🍞 Hunter Lysa ate",
+            "💬 Hunter Lysa talked to King Aldwin (check the king's mood for potential negotiation opportunities)",
+            "🍞 Forge Thane ate",
+            "Healer Mira worked",
+            "🍞 Wizard Garen ate",
+            "🍞 Baron Eliot ate"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    },
+    {
+      "day": 10,
+      "alive_npcs": 10,
+      "locations": {
+        "Castle Ravencrest": {
+          "npc_count": 10,
+          "events": [
+            "🎲 strange event"
+          ],
+          "actions": [
+            "🍞 King Aldwin ate",
+            "💬 King Aldwin talked to Sir Garrett (check on guard's mood and energy levels)",
+            "🍞 Sir Garrett ate",
+            "🍞 Trader Magnus ate",
+            "😴 Hunter Lysa rested",
+            "😴 Forge Thane rested",
+            "💬 Forge Thane talked to King Aldwin (try to maintain a good relationship despite current tension)",
+            "🍞 Healer Mira ate",
+            "🍞 Thief Renal ate",
+            "😴 Wizard Garen rested"
+          ]
+        },
+        "Willowbrook": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        },
+        "Shadowwood": {
+          "npc_count": 0,
+          "events": [],
+          "actions": []
+        }
+      }
+    }
+  ]
+}

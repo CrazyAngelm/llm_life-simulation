@@ -1,11 +1,12 @@
 # 📁 llm_clients.py - LLM clients
 # 🎯 Core function: Integration with Ollama and DeepSeek API
-# 🔗 Key dependencies: ollama, openai
+# 🔗 Key dependencies: ollama, openai, prompt_loader
 # 💡 Usage: Used in simulator.py for LLM decisions and chronicles
 
 import json
 import asyncio
 from typing import Optional, Dict, Any
+from prompt_loader import prompt_loader
 
 try:
     import ollama
@@ -77,26 +78,9 @@ class OllamaClient:
             print(f"🎲 [LLM] Generating {count} random {name_type} names...")
             
             if name_type == "locations":
-                prompt = f"""Generate {count} medieval fantasy location names with descriptions.
-Each location should be unique and atmospheric.
-Return ONLY JSON in this format:
-{{"locations": [
-  {{"name": "Castle Ravencrest", "type": "royal", "description": "Dark fortress on a cliff"}},
-  {{"name": "Willowbrook", "type": "settlement", "description": "Peaceful village by a stream"}},
-  {{"name": "Shadowwood", "type": "wilderness", "description": "Mysterious forest full of ancient secrets"}}
-]}}"""
-            
+                prompt = prompt_loader.render_template("generate_locations", count=count)
             elif name_type == "npcs":
-                prompt = f"""Generate {count} medieval fantasy character names with roles and locations.
-Mix different social classes and professions.
-Return ONLY JSON in this format:
-{{"npcs": [
-  {{"id": "king_1", "name": "King Aldwin", "role": "king", "location": "Castle"}},
-  {{"id": "guard_1", "name": "Sir Garrett", "role": "guard", "location": "Castle"}},
-  {{"id": "peasant_1", "name": "Farmer Beck", "role": "peasant", "location": "Village"}},
-  {{"id": "merchant_1", "name": "Trader Magnus", "role": "merchant", "location": "Village"}},
-  {{"id": "hunter_1", "name": "Hunter Lysa", "role": "hunter", "location": "Forest"}}
-]}}"""
+                prompt = prompt_loader.render_template("generate_npcs", count=count)
             else:
                 return None
 
@@ -140,12 +124,16 @@ Return ONLY JSON in this format:
                 if k in context.get('nearby_npcs', [])
             }
             
-            prompt = f"""You are a {npc_data['role']} named {npc_data['name']} in {npc_data['location']}.
-Your stats: health={npc_data['stats']['health']}, energy={npc_data['stats']['energy']}, mood={npc_data['stats']['mood']}.
-Your relationships with nearby people: {relationships_str}
-
-Make ONE social decision. Reply ONLY JSON:
-{{"action": "chat/help/argue/ignore", "target": "other_npc_id", "reason": "brief reason"}}"""
+            prompt = prompt_loader.render_template(
+                "npc_decision",
+                npc_role=npc_data['role'],
+                npc_name=npc_data['name'],
+                npc_location=npc_data['location'],
+                health=npc_data['stats']['health'],
+                energy=npc_data['stats']['energy'],
+                mood=npc_data['stats']['mood'],
+                relationships=relationships_str
+            )
 
             print(f"🔄 [LLM] Sending request to model {self.model_name}...")
             
@@ -199,25 +187,15 @@ class DeepSeekClient:
         try:
             print(f"🤖 [LLM] Requesting chronicle generation from DeepSeek...")
             
-            key_events = events_data.get('key_events', [])
-            deaths = events_data.get('deaths', [])
-            relationships = events_data.get('relationships_summary', [])
-            current_day = events_data.get('current_day', 0)
-            alive_count = events_data.get('alive_count', 0)
-            total_count = events_data.get('total_count', 0)
-
-            prompt = f"""Write an epic chronicle of medieval world life simulation for {current_day} days.
-
-KEY EVENTS:
-{key_events[:20]}  
-
-DEATHS: {deaths if deaths else "Nobody died"}
-
-RELATIONSHIPS: {relationships[:10]}
-
-ALIVE NPCs: {alive_count}/{total_count}
-
-Write a beautiful story in medieval chronicle style. Use emojis. Be creative but base it on the data."""
+            prompt = prompt_loader.render_template(
+                "generate_chronicle",
+                current_day=events_data.get('current_day', 0),
+                key_events=events_data.get('key_events', []),
+                deaths=events_data.get('deaths', []),
+                relationships_summary=events_data.get('relationships_summary', []),
+                alive_count=events_data.get('alive_count', 0),
+                total_count=events_data.get('total_count', 0)
+            )
 
             print(f"🔄 [LLM] Sending chronicle generation request...")
 

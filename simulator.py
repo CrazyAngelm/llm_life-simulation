@@ -23,8 +23,7 @@ class WorldSimulator:
         self.locations: Dict[str, Location] = {}
         self.daily_logs: List[Dict] = []
         self.llm_manager = None
-        
-        self._init_world()
+        self.world_initialized = False
         
     async def initialize_llm(self):
         """Initialize LLM clients"""
@@ -33,9 +32,99 @@ class WorldSimulator:
             CONFIG["deepseek_api_key"]
         )
         await self.llm_manager.initialize()
+    
+    async def initialize_world_with_random_names(self):
+        """Initialize world with LLM-generated names or fallback to config"""
+        if not self.world_initialized:
+            print("🎲 Attempting to generate random names...")
+            
+            # Try to generate random location names
+            generated_locations = None
+            if self.llm_manager and self.llm_manager.ollama_available:
+                generated_locations = await self.llm_manager.generate_random_names("locations", CONFIG["world_generation"]["location_count"])
+            
+            # Try to generate random NPC names
+            generated_npcs = None
+            if self.llm_manager and self.llm_manager.ollama_available:
+                generated_npcs = await self.llm_manager.generate_random_names("npcs", CONFIG["world_generation"]["npc_count"])
+            
+            # Initialize world with generated or fallback data
+            await self._init_world_with_data(generated_locations, generated_npcs)
+            self.world_initialized = True
 
+    async def _init_world_with_data(self, generated_locations=None, generated_npcs=None):
+        """Initialize game world with generated or fallback data"""
+        
+        # Create locations (generated or fallback)
+        if generated_locations and "locations" in generated_locations:
+            print("🎲 Using LLM-generated location names")
+            for loc_data in generated_locations["locations"]:
+                name = loc_data["name"]
+                loc_type = loc_data["type"]
+                desc = loc_data["description"]
+                self.locations[name] = Location(name, loc_type, desc)
+        else:
+            print("🔄 Using fallback location names from config")
+            for name, loc_type, desc in CONFIG["locations"]:
+                self.locations[name] = Location(name, loc_type, desc)
+
+        # Get location names for NPC placement
+        location_names = list(self.locations.keys())
+        if not location_names:
+            print("❌ No locations available!")
+            return
+
+        # Create NPCs (generated or fallback)
+        if generated_npcs and "npcs" in generated_npcs:
+            print("🎲 Using LLM-generated NPC names")
+            for npc_data in generated_npcs["npcs"]:
+                npc_id = npc_data["id"]
+                name = npc_data["name"]
+                role = npc_data["role"]
+                # Map location to existing locations
+                target_location = self._map_location_name(npc_data["location"], location_names)
+                
+                npc = NPC(npc_id, name, role, target_location)
+                self.npcs[npc_id] = npc
+                self.locations[target_location].add_npc(npc_id)
+        else:
+            print("🔄 Using fallback NPC names from config")
+            for npc_id, name, role, location in CONFIG["npc_data"]:
+                # Map location to existing locations
+                target_location = self._map_location_name(location, location_names)
+                
+                npc = NPC(npc_id, name, role, target_location)
+                self.npcs[npc_id] = npc
+                self.locations[target_location].add_npc(npc_id)
+
+        # Initialize relationships between NPCs
+        self._init_relationships()
+        
+        print(f"✅ Created {len(self.npcs)} NPCs in {len(self.locations)} locations")
+    
+    def _map_location_name(self, original_location: str, available_locations: List[str]) -> str:
+        """Map location name to existing location"""
+        # Try exact match first
+        if original_location in available_locations:
+            return original_location
+        
+        # Try to find similar location type
+        location_mapping = {
+            "Castle": ["Castle", "Fortress", "Keep", "Citadel"],
+            "Village": ["Village", "Town", "Settlement", "Hamlet"],
+            "Forest": ["Forest", "Woods", "Wilderness", "Grove"]
+        }
+        
+        for available_loc in available_locations:
+            for key, variants in location_mapping.items():
+                if original_location in variants and any(v in available_loc for v in variants):
+                    return available_loc
+        
+        # Fallback to first available location
+        return available_locations[0]
+    
     def _init_world(self):
-        """Initialize game world"""
+        """Initialize game world (legacy method, kept for compatibility)"""
         # Create locations
         for name, loc_type, desc in CONFIG["locations"]:
             self.locations[name] = Location(name, loc_type, desc)
@@ -63,6 +152,10 @@ class WorldSimulator:
 
     async def run_simulation(self):
         """Main simulation loop"""
+        # Initialize world with random names if not done yet
+        if not self.world_initialized:
+            await self.initialize_world_with_random_names()
+        
         print(f"\n🚀 Starting simulation for {CONFIG['max_days']} days\n")
         
         for day in range(1, CONFIG["max_days"] + 1):
@@ -108,19 +201,23 @@ class WorldSimulator:
             npc.age += 0.1
             
             # Natural energy and hunger reduction
-            npc.update_stat("energy", -random.randint(10, 25))
-            npc.update_stat("hunger", random.randint(15, 30))
+            energy_loss = random.randint(10, 25)
+            hunger_gain = random.randint(15, 30)
+            npc.update_stat("energy", -energy_loss)
+            npc.update_stat("hunger", hunger_gain)
             
             # Age effect on health
             if npc.age > 65:
-                npc.update_stat("health", -random.randint(1, 3))
+                health_loss = random.randint(1, 3)
+                print(f"  👴 Aging: {npc.name} loses health due to age")
+                npc.update_stat("health", -health_loss)
                 
             # Death from disease/old age
             if npc.stats["health"] <= 0:
                 npc.alive = False
                 npc.add_action(f"💀 {npc.name} died")
                 dead_npcs.append(npc.name)
-                print(f"💀 {npc.name} died at age {npc.age:.1f}")
+                print(f"💀 DEATH: {npc.name} died at age {npc.age:.1f}")
                 
         # Remove dead NPCs from locations
         for npc_name in dead_npcs:
@@ -135,6 +232,7 @@ class WorldSimulator:
 
             # Food - priority №1
             if npc.stats["hunger"] > 70:
+                print(f"  🍞 Basic: {npc.name} eats (hunger: {npc.stats['hunger']})")
                 npc.update_stat("hunger", -40)
                 npc.update_stat("energy", 15)
                 npc.update_stat("mood", 10)
@@ -142,6 +240,7 @@ class WorldSimulator:
 
             # Sleep/rest - if low energy
             elif npc.stats["energy"] < 30:
+                print(f"  😴 Basic: {npc.name} rests (energy: {npc.stats['energy']})")
                 npc.update_stat("energy", 50)
                 npc.update_stat("mood", 15)
                 npc.add_action(f"😴 {npc.name} rested")
@@ -149,6 +248,7 @@ class WorldSimulator:
             # Work based on role - if energy is high
             elif npc.stats["energy"] > 60 and random.random() < 0.6:
                 action = CONFIG["role_actions"].get(npc.role, "worked")
+                print(f"  🔨 Basic: {npc.name} works ({npc.role})")
                 npc.add_action(f"{npc.name} {action}")
                 npc.update_stat("energy", -15)
                 npc.update_stat("mood", 5)
@@ -158,6 +258,8 @@ class WorldSimulator:
         if not self.llm_manager:
             return
 
+        llm_active_npcs = []
+        
         for npc in self.npcs.values():
             if not npc.alive or random.random() > CONFIG["llm_decision_chance"]:
                 continue
@@ -168,6 +270,8 @@ class WorldSimulator:
 
             if not location_npcs:
                 continue
+
+            llm_active_npcs.append(npc.name)
 
             # Formulate context for LLM
             context = {
@@ -180,6 +284,11 @@ class WorldSimulator:
             
             if decision:
                 await self._apply_llm_decision(npc, decision, location_npcs)
+        
+        if llm_active_npcs:
+            print(f"🧠 [LLM SESSION] Processed {len(llm_active_npcs)} NPCs: {', '.join(llm_active_npcs)}")
+        else:
+            print(f"🎲 [NO LLM] All decisions made through basic logic")
 
     async def _apply_llm_decision(self, npc: NPC, decision: Dict, available_npcs: List[str]):
         """Apply LLM decision"""
@@ -194,6 +303,7 @@ class WorldSimulator:
         
         if action == "chat":
             # Friendly conversation
+            print(f"  💬 Social: {npc.name} talks to {target_npc.name}")
             npc.update_relationship(target_id, 10)
             target_npc.update_relationship(npc.id, 5)
             npc.update_stat("mood", 10)
@@ -201,6 +311,7 @@ class WorldSimulator:
             
         elif action == "help":
             # Helping
+            print(f"  🤝 Social: {npc.name} helps {target_npc.name}")
             npc.update_relationship(target_id, 15)
             target_npc.update_relationship(npc.id, 20)
             target_npc.update_stat("mood", 15)
@@ -209,6 +320,7 @@ class WorldSimulator:
             
         elif action == "argue":
             # Conflict
+            print(f"  😠 Social: {npc.name} argues with {target_npc.name}")
             npc.update_relationship(target_id, -20)
             target_npc.update_relationship(npc.id, -15)
             npc.update_stat("mood", -10)
@@ -234,13 +346,17 @@ class WorldSimulator:
     def _apply_event_effects(self, npc: NPC, event: str):
         """Apply effects of the event to NPCs"""
         if any(word in event for word in ["feast", "wedding", "festival"]):
+            print(f"  🎉 Event effect: {npc.name} enjoys {event}")
             npc.update_stat("mood", 20)
         elif "attack" in event:
+            print(f"  ⚔️ Event effect: {npc.name} suffers from {event}")
             npc.update_stat("health", -15)
             npc.update_stat("mood", -20)
         elif "treasure" in event:
+            print(f"  💰 Event effect: {npc.name} benefits from {event}")
             npc.update_stat("mood", 30)
         elif "harvest" in event:
+            print(f"  🌾 Event effect: {npc.name} enjoys {event}")
             npc.update_stat("mood", 15)
 
     def _log_day(self):
@@ -282,74 +398,82 @@ class WorldSimulator:
 
     async def _generate_final_chronicle(self):
         """Generate final chronicle"""
-        if not self.llm_manager:
-            print("⚠️ LLM Manager not initialized")
-            return
-
-        # Collect data for the chronicle
-        key_events = []
-        deaths = []
+        print(f"\n📜 Generating final chronicle...")
+        print(f"🤖 [LLM] Starting final chronicle generation...")
         
-        # Recent events
-        for day_log in self.daily_logs[-10:]:
-            for loc_name, loc_data in day_log["locations"].items():
-                key_events.extend(loc_data["events"])
-                key_events.extend(loc_data["actions"][:3])  # Take 3 actions from location
-        
-        # Deaths
-        for npc in self.npcs.values():
-            if not npc.alive:
-                deaths.append(f"{npc.name} ({npc.role})")
-
-        # Relationships
-        relationships_summary = []
-        for npc in self.npcs.values():
-            if npc.alive and npc.relationships:
-                best_friend = max(npc.relationships.items(), key=lambda x: x[1], default=("no one", 0))
-                worst_enemy = min(npc.relationships.items(), key=lambda x: x[1], default=("no one", 0))
-                
-                if best_friend[1] > 50:
-                    friend_name = self.npcs[best_friend[0]].name
-                    relationships_summary.append(f"{npc.name} is friends with {friend_name}")
-                if worst_enemy[1] < -30:
-                    enemy_name = self.npcs[worst_enemy[0]].name
-                    relationships_summary.append(f"{npc.name} is enemies with {enemy_name}")
-
-        # Prepare data for LLM
+        # Collect data for chronicle
         events_data = {
-            "key_events": key_events,
-            "deaths": deaths,
-            "relationships_summary": relationships_summary,
             "current_day": self.current_day,
-            "alive_count": sum(1 for npc in self.npcs.values() if npc.alive),
-            "total_count": len(self.npcs)
+            "alive_count": len([npc for npc in self.npcs.values() if npc.alive]),
+            "total_count": len(self.npcs),
+            "key_events": [],
+            "deaths": [],
+            "relationships_summary": []
         }
 
+        # Collect key events from all days
+        for day_log in self.daily_logs:
+            for npc_id, actions in day_log.get("actions", {}).items():
+                for action in actions:
+                    if any(keyword in action.lower() for keyword in ["died", "talked", "helped", "argued"]):
+                        events_data["key_events"].append(f"Day {day_log['day']}: {action}")
+
+        # Collect deaths
+        for npc in self.npcs.values():
+            if not npc.alive:
+                events_data["deaths"].append(f"{npc.name} (age {npc.age:.1f})")
+
+        # Collect interesting relationships
+        for npc in self.npcs.values():
+            if npc.alive:
+                for other_id, relation in npc.relationships.items():
+                    if relation > 50 or relation < -30:
+                        other_npc = self.npcs.get(other_id)
+                        if other_npc:
+                            status = "friends" if relation > 50 else "enemies"
+                            events_data["relationships_summary"].append(
+                                f"{npc.name} and {other_npc.name} are {status} ({relation})"
+                            )
+
+        print(f"📊 [DATA] Collected: {len(events_data['key_events'])} events, {len(events_data['deaths'])} deaths, {len(events_data['relationships_summary'])} relationships")
+
         # Generate chronicle
-        chronicle = await self.llm_manager.generate_chronicle(events_data)
-        
-        # Add statistics
-        stats = f"""
+        if self.llm_manager:
+            chronicle = await self.llm_manager.generate_chronicle(events_data)
+        else:
+            print(f"⚠️ [LLM] LLM Manager unavailable, creating basic chronicle...")
+            chronicle = self._create_simple_chronicle(events_data)
 
-## 📊 Simulation Statistics
-
-**Days simulated**: {self.current_day}
-**Alive NPCs**: {events_data['alive_count']}/{events_data['total_count']}
-**Dead**: {len(deaths)}
-
-### NPCs by location:
-"""
-        for loc_name, location in self.locations.items():
-            alive_here = len(location.get_alive_npcs(self.npcs))
-            stats += f"- **{loc_name}**: {alive_here} NPC\n"
-
-        final_chronicle = chronicle + stats
-        
         # Save chronicle
-        with open("chronicles.md", "w", encoding="utf-8") as f:
-            f.write(final_chronicle)
-            
-        print("✅ Chronicle saved to chronicles.md")
+        try:
+            with open("chronicles.md", "w", encoding="utf-8") as f:
+                f.write(chronicle)
+            print(f"💾 [SAVE] Chronicle saved to chronicles.md")
+        except Exception as e:
+            print(f"❌ [SAVE] Error saving chronicle: {e}")
+
+    def _create_simple_chronicle(self, events_data: Dict) -> str:
+        """Create simple chronicle without LLM"""
+        print(f"📝 [LOCAL] Creating local chronicle...")
+        
+        current_day = events_data.get('current_day', 0)
+        alive_count = events_data.get('alive_count', 0)
+        total_count = events_data.get('total_count', 0)
+        key_events = events_data.get('key_events', [])
+        
+        chronicle = f"""# 📜 Simulation Chronicle
+
+## Simulation days: {current_day}
+## Surviving NPCs: {alive_count}/{total_count}
+
+### Key events of recent days:
+"""
+        
+        for i, event in enumerate(key_events[-15:], 1):
+            chronicle += f"{i}. {event}\n"
+        
+        chronicle += "\n*Chronicle generated locally (LLM unavailable)*"
+        return chronicle
 
     def get_world_status(self) -> Dict:
         """Get current world status"""

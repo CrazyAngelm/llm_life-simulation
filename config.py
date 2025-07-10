@@ -5,13 +5,19 @@
 
 CONFIG = {
     # Simulation settings
-    "max_days": 25,
+    "max_days": 10,
     "llm_decision_chance": 0.3,  # 30% decisions via LLM
     "random_event_chance": 0.25,
     
+    # World generation settings
+    "world_generation": {
+        "location_count": 3,
+        "npc_count": 10
+    },
+    
     # LLM settings
-    "ollama_model": "llama3.2",  # Ollama model
-    "deepseek_api_key": "sk-your-deepseek-key-here",
+    "ollama_model": "qwen2.5:3b",  # Ollama model
+    "deepseek_api_key": "sk-60184baa615d4f9a97e1cafe57d62d6b",
     
     # Locations
     "locations": [

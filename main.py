@@ -13,7 +13,6 @@ async def main():
     print("🌍 LLM Life Simulator MVP")
     print("=" * 50)
     print("Life simulator with AI agents and LLM integration")
-    print("For master's project on LLM + AI AGENT\n")
     
     try:
         # Create simulator
@@ -21,6 +20,9 @@ async def main():
         
         # Initialize LLM
         await simulator.initialize_llm()
+        
+        # Initialize world with random names
+        await simulator.initialize_world_with_random_names()
         
         # Show initial status
         status = simulator.get_world_status()

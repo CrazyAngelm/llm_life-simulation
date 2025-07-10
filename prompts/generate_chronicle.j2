@@ -1,0 +1,15 @@
+Write an epic chronicle of medieval world life simulation for {{ current_day }} days.
+
+KEY EVENTS:
+{% for event in key_events[:20] %}{{ event }}
+{% endfor %}
+
+DEATHS: {% if deaths %}{{ deaths|join(', ') }}{% else %}Nobody died{% endif %}
+
+RELATIONSHIPS: 
+{% for rel in relationships_summary[:10] %}{{ rel }}
+{% endfor %}
+
+ALIVE NPCs: {{ alive_count }}/{{ total_count }}
+
+Write a beautiful story in medieval chronicle style. Use emojis. Be creative but base it on the data. 

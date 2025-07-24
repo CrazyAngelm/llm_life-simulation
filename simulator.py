@@ -208,8 +208,13 @@ class WorldSimulator:
             
             # Age effect on health
             if npc.age > 65:
-                health_loss = random.randint(1, 3)
+                health_loss = random.randint(1, 5)
                 print(f"  👴 Aging: {npc.name} loses health due to age")
+                npc.update_stat("health", -health_loss)
+            
+            if npc.stats["mood"] <= 40:
+                health_loss = random.randint(1, (100 - npc.stats["mood"]) / 10)
+                print(f"  😔 {npc.name} loses health due to low mood")
                 npc.update_stat("health", -health_loss)
                 
             # Death from disease/old age

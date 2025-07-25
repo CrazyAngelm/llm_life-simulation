@@ -213,7 +213,7 @@ class WorldSimulator:
                 npc.update_stat("health", -health_loss)
             
             if npc.stats["mood"] <= 40:
-                health_loss = random.randint(1, (100 - npc.stats["mood"]) / 10)
+                health_loss = random.randint(1, int((100 - npc.stats["mood"]) / 10))
                 print(f"  😔 {npc.name} loses health due to low mood")
                 npc.update_stat("health", -health_loss)
                 

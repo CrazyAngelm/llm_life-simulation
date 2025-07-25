@@ -5,7 +5,10 @@
 
 import asyncio
 import sys
+from dotenv import load_dotenv
 from simulator import WorldSimulator
+
+load_dotenv()
 
 
 async def main():

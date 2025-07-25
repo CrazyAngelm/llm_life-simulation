@@ -2,22 +2,23 @@
 # 🎯 Core function: Centralized project settings
 # 🔗 Key dependencies: None (basic Python)
 # 💡 Usage: Imported in simulator.py and main.py
+import os
 
 CONFIG = {
     # Simulation settings
     "max_days": 10,
-    "llm_decision_chance": 0.3,  # 30% decisions via LLM
+    "llm_decision_chance": 0.4,  # 30% decisions via LLM
     "random_event_chance": 0.25,
     
     # World generation settings
     "world_generation": {
         "location_count": 3,
-        "npc_count": 10
+        "npc_count": 12
     },
     
     # LLM settings
     "ollama_model": "qwen2.5:3b",  # Ollama model
-    "deepseek_api_key": "sk-60184baa615d4f9a97e1cafe57d62d6b",
+    "deepseek_api_key": os.getenv("DEEPSEEK_API_KEY"),
     
     # Locations
     "locations": [
